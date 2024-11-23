@@ -34,12 +34,14 @@ public class AuthService implements UserDetailsService {
         return Optional.ofNullable(userRepository.findByUsername(username)).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    public User register(AuthRegisterPostRequestBody authRegisterPostRequestBody) {
+    public User register(AuthRegisterPostRequestBody authRegisterPostRequestBody, MultipartFile profilePicture) throws IOException {
+        byte[] compressedImage = ImageUtil.compressImage(profilePicture.getBytes());
         return userRepository.save(User.builder()
                 .name(authRegisterPostRequestBody.getName())
                 .username(authRegisterPostRequestBody.getUsername())
                 .password(passwordEncoder().encode(authRegisterPostRequestBody.getPassword()))
                 .role(authRegisterPostRequestBody.getRole())
+                .profilePic(compressedImage)
                 .build());
     }
 

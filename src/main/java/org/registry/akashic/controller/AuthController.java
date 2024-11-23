@@ -46,9 +46,10 @@ public class AuthController {
         return token + ", " + user.getId() + ", " + user.getUsername();
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody @Valid AuthRegisterPostRequestBody authRegisterPostRequestBody) {
-        return new ResponseEntity<>(authService.register(authRegisterPostRequestBody), HttpStatus.CREATED);
+    @PostMapping(value = "/register", consumes = "multipart/form-data")
+    public ResponseEntity<User> register(@Valid @ModelAttribute AuthRegisterPostRequestBody authRegisterPostRequestBody,
+                                         @RequestPart("profilePicture") MultipartFile profilePicture) throws IOException {
+        return new ResponseEntity<>(authService.register(authRegisterPostRequestBody, profilePicture), HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update", consumes = "multipart/form-data")
